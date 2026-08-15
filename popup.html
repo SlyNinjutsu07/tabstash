@@ -2,13 +2,20 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <style>
-    body { width: 300px; padding: 12px; font-family: system-ui, sans-serif; }
-  </style>
+  <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-  <h3>TabStash</h3>
-  <div id="app">Hello from the popup</div>
+  <header class="topbar">
+    <button id="add-btn" class="add-btn" type="button" aria-label="Save current tab">
+      <img class="add-icon" src="icons/add.svg" alt="">
+    </button>
+    <h1 class="title">TabStash</h1>
+  </header>
+
+  <main id="app" class="tab-list">
+    <!-- saved tabs will render here (step 3) -->
+  </main>
+
   <script src="popup.js"></script>
 </body>
 </html>

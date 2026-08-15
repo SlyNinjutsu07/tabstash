@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "TabStash",
   "version": "0.1",
-  "description": "Save and organize tabs to use for later; Clean up your browser",
+  "description": "Save and organize tabs to use for later and clean up your browser",
   "action": {
     "default_popup": "popup.html"
   }

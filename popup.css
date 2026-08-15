@@ -1,0 +1,51 @@
+body {
+  width: 300px;
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  color: #1a1a1a;
+}
+
+/* Top bar: button pinned left, title centered across the FULL width */
+.topbar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 12px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.add-btn {
+  position: absolute;
+  left: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.add-btn:hover {
+  background: #f2f2f2;
+}
+
+.add-icon {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+.tab-list {
+  padding: 12px;
+}
