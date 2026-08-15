@@ -5,14 +5,20 @@ body {
   color: #1a1a1a;
 }
 
-/* Top bar: button pinned left, title centered across the FULL width */
+/* Top bar: action buttons on the left, title pushed to the right */
 .topbar {
-  position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  gap: 8px;
   padding: 10px 12px;
   border-bottom: 1px solid #e5e5e5;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .title {
@@ -21,9 +27,24 @@ body {
   font-weight: 600;
 }
 
-.add-btn {
-  position: absolute;
-  left: 8px;
+/* Green primary action */
+.save-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  background: #16a34a;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.save-btn:hover {
+  background: #15803d;
+}
+
+/* Square icon-only button (original + style, reused for folder) */
+.icon-btn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -36,11 +57,11 @@ body {
   cursor: pointer;
 }
 
-.add-btn:hover {
+.icon-btn:hover {
   background: #f2f2f2;
 }
 
-.add-icon {
+.btn-icon {
   width: 16px;
   height: 16px;
   display: block;
