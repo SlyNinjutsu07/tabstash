@@ -1,5 +1,9 @@
 console.log("popup loaded!");
 
+function refreshPopup(){
+    
+}
+
 async function saveTabData(){
     try {
         const [tab] = await chrome.tabs.query({active: true, currentWindow: true})
@@ -14,7 +18,7 @@ async function saveTabData(){
             url: tab.url,
             timeSaved: new Date().toISOString(),
             folder: "None",
-
+            icon: tab.favIconUrl
         }
 
         await chrome.storage.sync.set({[tabData.url]: tabData})
@@ -23,3 +27,9 @@ async function saveTabData(){
         console.error("error saving tab...", error)
     }
 }
+
+const saveTabButton = document.querySelector("#add-btn")
+
+saveTabButton.addEventListener("click", () => {
+    saveTabData()
+})
