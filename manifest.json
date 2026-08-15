@@ -5,5 +5,10 @@
   "description": "Save and organize tabs to use for later and clean up your browser",
   "action": {
     "default_popup": "popup.html"
-  }
+  },
+
+  "permissions": [
+    "storage",
+    "activeTab"
+  ]
 }
