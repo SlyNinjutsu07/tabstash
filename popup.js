@@ -4,10 +4,7 @@ async function getTabData(){
     try {
         const data = await chrome.storage.sync.get(null) // All data objects
 
-        for (const [url, data] in Object.entries(data)){
-            console.log("The URL key is: ", url)
-            console.log("Saved object is: ", data)
-        }
+        return data
     } catch (error){
         console.error("Error reading chrome.storage.sync...", error)
     }
@@ -37,8 +34,64 @@ async function saveTabData(){
     }
 }
 
+async function drawPopup(){
+    const data = await getTabData()
+
+    // The container we draw the list into
+    const list = document.querySelector("#app")
+
+    // Refresh: wipe whatever is there before rebuilding, so calling
+    // drawPopup() again never duplicates rows
+    list.innerHTML = ""
+
+    // data is undefined if getTabData hit its catch; fall back to {}
+    const entries = Object.entries(data ?? {})
+
+    // Empty state: nothing saved yet
+    if (entries.length === 0) {
+        const empty = document.createElement("p")
+        empty.className = "empty-msg"
+        empty.textContent = "No saved tabs yet."
+        list.appendChild(empty)
+        return
+    }
+
+    // Build one row per saved tab
+    for (const [url, tab] of entries) {
+        // Row container. A <div> for now; the URL rides along in
+        // data-url so your future click handler can read row.dataset.url
+        const row = document.createElement("div")
+        row.className = "tab-row"
+        row.dataset.url = url
+
+        // Favicon image. Hide it if the icon fails to load (some tabs
+        // have no favicon), so we never show a broken-image box
+        const favicon = document.createElement("img")
+        favicon.className = "tab-favicon"
+        favicon.src = tab.iconURL || ""
+        favicon.alt = ""
+        favicon.onerror = () => { favicon.style.visibility = "hidden" }
+
+        // Title text. textContent (not innerHTML) so a page title
+        // containing HTML can't inject markup into the popup
+        const title = document.createElement("span")
+        title.className = "tab-title"
+        title.textContent = tab.title || url
+
+        // Assemble: favicon + title into the row, row into the list
+        row.appendChild(favicon)
+        row.appendChild(title)
+        list.appendChild(row)
+    }
+}
+
+
 const saveTabButton = document.querySelector("#add-btn")
 
-saveTabButton.addEventListener("click", () => {
-    saveTabData()
+saveTabButton.addEventListener("click", async () => {
+    await saveTabData()   // wait for the write to finish...
+    drawPopup()           // ...then redraw so the new tab shows immediately
 })
+
+drawPopup()
+

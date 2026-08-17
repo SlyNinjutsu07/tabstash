@@ -68,5 +68,41 @@ body {
 }
 
 .tab-list {
-  padding: 12px;
+  padding: 8px;
+}
+
+/* One saved-tab row */
+.tab-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.tab-row:hover {
+  background: #f2f2f2;
+}
+
+.tab-favicon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;      /* never let the icon squish */
+}
+
+.tab-title {
+  flex: 1;             /* take the remaining width */
+  min-width: 0;        /* required for the ellipsis below to work in flex */
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;   /* long titles get "…" instead of wrapping */
+}
+
+.empty-msg {
+  margin: 0;
+  padding: 8px;
+  font-size: 13px;
+  color: #888;
 }
