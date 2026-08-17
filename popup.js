@@ -1,7 +1,16 @@
 console.log("popup loaded!");
 
-function refreshPopup(){
-    
+async function getTabData(){
+    try {
+        const data = await chrome.storage.sync.get(null) // All data objects
+
+        for (const [url, data] in Object.entries(data)){
+            console.log("The URL key is: ", url)
+            console.log("Saved object is: ", data)
+        }
+    } catch (error){
+        console.error("Error reading chrome.storage.sync...", error)
+    }
 }
 
 async function saveTabData(){
@@ -18,7 +27,7 @@ async function saveTabData(){
             url: tab.url,
             timeSaved: new Date().toISOString(),
             folder: "None",
-            icon: tab.favIconUrl
+            iconURL: tab.favIconUrl
         }
 
         await chrome.storage.sync.set({[tabData.url]: tabData})
