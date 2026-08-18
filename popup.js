@@ -19,9 +19,17 @@ async function saveTabData(){
             return
         }
 
+        const url_normalized = normalizeURL(tab.url)
+
+        const tabResult = await chrome.storage.sync.get([url_normalized])
+        if(tabResult[url_normalized] !== undefined){
+            console.log("Tab exists already!")
+            return
+        }
+
         const tabData = {
             title: tab.title,
-            url: tab.url,
+            url: url_normalized,
             timeSaved: new Date().toISOString(),
             folder: "None",
             iconURL: tab.favIconUrl
