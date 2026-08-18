@@ -64,13 +64,16 @@ async function drawPopup(){
         row.className = "tab-row"
         row.dataset.url = url
 
-        // Favicon image. Hide it if the icon fails to load (some tabs
-        // have no favicon), so we never show a broken-image box
+        // Favicon image. If the site's icon fails to load (some tabs
+        // have none), swap in a bundled placeholder image
         const favicon = document.createElement("img")
         favicon.className = "tab-favicon"
-        favicon.src = tab.iconURL || ""
-        favicon.alt = ""
-        favicon.onerror = () => { favicon.style.visibility = "hidden" }
+        favicon.src = tab.iconURL || "icons/empty-website-logo.png"
+        favicon.alt = ""   // decorative: the title text sits right beside it
+        favicon.onerror = () => {
+            favicon.onerror = null   // stop, so a missing fallback can't loop forever
+            favicon.src = "icons/empty-website-logo.png"
+        }
 
         // Title text. textContent (not innerHTML) so a page title
         // containing HTML can't inject markup into the popup
