@@ -24,6 +24,7 @@ async function saveTabData(){
         const tabResult = await chrome.storage.sync.get([url_normalized])
         if(tabResult[url_normalized] !== undefined){
             console.log("Tab exists already!")
+            showAlreadySavedNotice()
             return
         }
 
@@ -89,13 +90,45 @@ async function drawPopup(){
         title.className = "tab-title"
         title.textContent = tab.title || url
 
-        // Assemble: favicon + title into the row, row into the list
+        // Delete button ("×"). Hidden until the row is hovered (CSS handles
+        // the reveal). No click handler here on purpose — you'll add the
+        // listener; read del.dataset.url (or row.dataset.url) to know which
+        // tab to remove.
+        const del = document.createElement("button")
+        del.type = "button"
+        del.className = "tab-delete"
+        del.textContent = "×"   // × (multiplication sign) — a clean, centered X
+        del.setAttribute("aria-label", "Delete saved tab")
+        del.dataset.url = url
+
+        // Assemble: favicon + title + delete into the row, row into the list
         row.appendChild(favicon)
         row.appendChild(title)
+        row.appendChild(del)
         list.appendChild(row)
     }
 }
 
+
+// Shows a green "Already Saved!" banner at the top-center of the popup,
+// then fades it out. Reuses one element so rapid clicks don't stack banners.
+function showAlreadySavedNotice(){
+    let notice = document.querySelector("#saved-notice")
+
+    // Create it once, on first use
+    if (!notice) {
+        notice = document.createElement("div")
+        notice.id = "saved-notice"
+        notice.className = "saved-notice"
+        notice.textContent = "Already Saved!"
+        document.body.appendChild(notice)
+    }
+
+    // Show it, and reset the auto-hide timer if it's already showing
+    notice.classList.add("show")
+    clearTimeout(notice.hideTimer)
+    notice.hideTimer = setTimeout(() => notice.classList.remove("show"), 1800)
+}
 
 const saveTabButton = document.querySelector("#add-btn")
 

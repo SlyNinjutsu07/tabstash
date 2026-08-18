@@ -1,6 +1,15 @@
+/* Let the popup's own canvas show through, so the rounded body isn't
+   framed by a square background */
+html {
+  background: transparent;
+}
+
 body {
   width: 300px;
   margin: 0;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;          /* clip the header's top corners to the rounding */
   font-family: system-ui, sans-serif;
   color: #1a1a1a;
 }
@@ -100,9 +109,63 @@ body {
   text-overflow: ellipsis;   /* long titles get "…" instead of wrapping */
 }
 
+/* Delete "×" — kept in the layout always (so hovering doesn't shift the
+   title), but invisible until the row is hovered */
+.tab-delete {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: #888;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;                          /* hidden by default */
+  transition: opacity 0.15s ease;
+}
+
+.tab-row:hover .tab-delete {
+  opacity: 1;                          /* revealed when the row is hovered */
+}
+
+.tab-delete:hover {
+  background: #fdecec;                 /* subtle red wash on the X itself */
+  color: #d33;
+}
+
 .empty-msg {
   margin: 0;
   padding: 8px;
   font-size: 13px;
   color: #888;
+}
+
+/* "Already Saved!" banner — top-center of the popup, fades in/out */
+.saved-notice {
+  position: fixed;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  padding: 6px 14px;
+  border-radius: 6px;
+  background: #16a34a;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  pointer-events: none;   /* never intercepts clicks */
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 10;
+}
+
+.saved-notice.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);   /* slides down into place */
 }
