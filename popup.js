@@ -1,6 +1,6 @@
 console.log("popup loaded!");
 
-async function getTabData(){
+async function getTab(){
     try {
         const data = await chrome.storage.sync.get(null) // All data objects
 
@@ -10,7 +10,16 @@ async function getTabData(){
     }
 }
 
-async function saveTabData(){
+async function deleteTab(urlKey){
+    try {
+        await chrome.storage.sync.remove(urlKey)  // promise form — wait for it
+        drawPopup()                                // now provably runs after removal
+    } catch (error) {
+        console.error("Error deleting tab...", error)
+    }
+}
+
+async function saveTab(){
     try {
         const [tab] = await chrome.tabs.query({active: true, currentWindow: true})
 
@@ -44,7 +53,7 @@ async function saveTabData(){
 }
 
 async function drawPopup(){
-    const data = await getTabData()
+    const data = await getTab()
 
     // The container we draw the list into
     const list = document.querySelector("#app")
@@ -100,7 +109,7 @@ async function drawPopup(){
         del.textContent = "×"   // × (multiplication sign) — a clean, centered X
         del.setAttribute("aria-label", "Delete saved tab")
         del.dataset.url = url
-
+        
         // Assemble: favicon + title + delete into the row, row into the list
         row.appendChild(favicon)
         row.appendChild(title)
@@ -131,11 +140,21 @@ function showAlreadySavedNotice(){
 }
 
 const saveTabButton = document.querySelector("#add-btn")
-
 saveTabButton.addEventListener("click", async () => {
-    await saveTabData()   // wait for the write to finish...
+    await saveTab()   // wait for the write to finish...
     drawPopup()           // ...then redraw so the new tab shows immediately
 })
+
+const app = document.querySelector('#app')
+app.addEventListener("click", async (event) => {
+        const btn = event.target.closest(".tab-delete")
+        if (btn){
+            const urlKey = btn.dataset.url
+            await deleteTab(urlKey)
+        }
+    })
+
+
 
 drawPopup()
 
