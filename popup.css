@@ -80,18 +80,34 @@ body {
   padding: 8px;
 }
 
-/* One saved-tab row */
+/* One saved-tab row: an "open" button + a delete button, side by side */
 .tab-row {
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 8px;
   border-radius: 6px;
-  cursor: pointer;
 }
 
 .tab-row:hover {
   background: #f2f2f2;
+}
+
+/* Clickable open area. Reset the button's native chrome so it reads as a
+   plain row, and lay favicon + title out in a line. */
+.tab-open {
+  flex: 1;             /* take the width, leaving room for the × */
+  min-width: 0;        /* lets the title ellipsis work */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
 }
 
 .tab-favicon {
@@ -101,7 +117,7 @@ body {
 }
 
 .tab-title {
-  flex: 1;             /* take the remaining width */
+  flex: 1;             /* take the remaining width inside the open button */
   min-width: 0;        /* required for the ellipsis below to work in flex */
   font-size: 13px;
   white-space: nowrap;

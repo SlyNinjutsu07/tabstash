@@ -10,6 +10,17 @@ async function getTab(){
     }
 }
 
+async function openTab(targetURL){
+    try {
+        if (targetURL){
+            await chrome.tabs.create({url: targetURL})
+        }
+    } catch(e){
+        console.error("Failed to open tab...", e)
+    }
+    
+}
+
 async function deleteTab(urlKey){
     try {
         await chrome.storage.sync.remove(urlKey)  // promise form — wait for it
@@ -110,9 +121,18 @@ async function drawPopup(){
         del.setAttribute("aria-label", "Delete saved tab")
         del.dataset.url = url
         
-        // Assemble: favicon + title + delete into the row, row into the list
-        row.appendChild(favicon)
-        row.appendChild(title)
+        // Clickable "open" area: favicon + title live inside a <button>.
+        // This is the element you'll wire to open the tab. It's a SIBLING of
+        // the delete button (not its parent), so the two never interfere.
+        const open = document.createElement("button")
+        open.type = "button"
+        open.className = "tab-open"
+        open.dataset.url = url   // your open handler reads this
+        open.appendChild(favicon)
+        open.appendChild(title)
+
+        // Assemble: [open button] + [delete button] into the row, row into list
+        row.appendChild(open)
         row.appendChild(del)
         list.appendChild(row)
     }
@@ -147,10 +167,16 @@ saveTabButton.addEventListener("click", async () => {
 
 const app = document.querySelector('#app')
 app.addEventListener("click", async (event) => {
-        const btn = event.target.closest(".tab-delete")
-        if (btn){
-            const urlKey = btn.dataset.url
-            await deleteTab(urlKey)
+        const del = event.target.closest(".tab-delete")
+        if (del){
+            await deleteTab(del.dataset.url)
+            return
+        }
+
+        const open = event.target.closest(".tab-open")
+        if(open){
+            await openTab(open.dataset.url)
+            return
         }
     })
 
