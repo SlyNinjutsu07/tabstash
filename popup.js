@@ -23,12 +23,12 @@ async function openTab(targetURL){
 
 async function createFolder(folderName){
     try {
-        const folders = await chrome.storage.sync.get(["__folders__"])
-        if (!folders){
-            await chrome.storage.sync.set({["__folders__"]: {}})
-            folders = await chrome.storage.sync.get(["__folders__"])
-            folders.add(folderName)
-        }
+        const result = await chrome.storage.sync.get(["__folders__"])
+        const folders = result["__folders__"] ?? [] // making a new array if one doesnt exist
+
+        folders.push(folderName)
+        await chrome.storage.sync.set({["__folders__"]: folders})
+        
     } catch (e){
         console.error("Error making new folder...", e)
     }
