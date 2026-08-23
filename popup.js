@@ -26,8 +26,15 @@ async function createFolder(folderName){
         const result = await chrome.storage.sync.get(["__folders__"])
         const folders = result["__folders__"] ?? [] // making a new array if one doesnt exist
 
-        folders.push(folderName)
-        await chrome.storage.sync.set({["__folders__"]: folders})
+        //guard against empty strings or null
+        folderName = folderName?.trim() 
+        if(!folderName) return
+
+        //check if folders doesnt exist
+        if (!folders.includes(folderName)){
+            folders.push(folderName)
+            await chrome.storage.sync.set({["__folders__"]: folders})
+        }
         
     } catch (e){
         console.error("Error making new folder...", e)
