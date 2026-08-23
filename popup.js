@@ -1,6 +1,6 @@
 console.log("popup loaded!");
 
-async function getTab(){
+async function getTabs(){
     try {
         const data = await chrome.storage.sync.get(null) // All data objects
 
@@ -77,7 +77,9 @@ async function saveTab(){
 }
 
 async function drawPopup(){
-    const data = await getTab()
+    const data = await getTabs()
+    const folders = data["__folders__"] ?? [] 
+    delete data["__folders__"]
 
     // The container we draw the list into
     const list = document.querySelector("#app")
@@ -180,7 +182,7 @@ saveTabButton.addEventListener("click", async () => {
 
 const addFolderButton = document.querySelector("#add-folder-btn")
 addFolderButton.addEventListener("click", async (event) => {
-    
+    //TODO: implementation 
 })
 
 const app = document.querySelector('#app')
