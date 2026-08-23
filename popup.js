@@ -246,6 +246,15 @@ app.addEventListener("click", async (event) => {
             await openTab(open.dataset.url)
             return
         }
+
+        const folderDel = event.target.closest(".folder-delete")
+        if (folderDel) { await deleteFolder(folderDel.dataset.folder); return }
+
+        const folderHeader = event.target.closest(".folder-header")
+        if (folderHeader) {
+            //TODO: expand folder or not
+            return
+        }
     })
 
 
