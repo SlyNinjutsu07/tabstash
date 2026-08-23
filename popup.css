@@ -155,6 +155,79 @@ body {
   color: #d33;
 }
 
+/* Folder component — mirrors a tab row, but with its own classes so the
+   delegation handler can tell folder clicks from tab clicks */
+.folder-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 6px;
+}
+
+.folder-row:hover {
+  background: #f2f2f2;
+}
+
+.folder-header {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.folder-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.folder-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 600;              /* bolder than a tab title, so folders read as headers */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.folder-delete {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: #888;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.folder-row:hover .folder-delete {
+  opacity: 1;
+}
+
+.folder-delete:hover {
+  background: #fdecec;
+  color: #d33;
+}
+
 .empty-msg {
   margin: 0;
   padding: 8px;

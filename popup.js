@@ -95,6 +95,45 @@ async function drawPopup(){
     // drawPopup() again never duplicates rows
     list.innerHTML = ""
 
+    // Render a component per folder (icon + name, clickable, deletable).
+    // Folders render FIRST so they show even when there are no saved tabs.
+    for (const folderName of folders) {
+        const folderRow = document.createElement("div")
+        folderRow.className = "folder-row"
+
+        // Clickable header (icon + name). data-folder tells your handler
+        // which folder was clicked (parallel to a tab's data-url).
+        const folderHeader = document.createElement("button")
+        folderHeader.type = "button"
+        folderHeader.className = "folder-header"
+        folderHeader.dataset.folder = folderName
+
+        const folderIcon = document.createElement("img")
+        folderIcon.className = "folder-icon"
+        folderIcon.src = "icons/folder.svg"
+        folderIcon.alt = ""
+
+        const folderLabel = document.createElement("span")
+        folderLabel.className = "folder-name"
+        folderLabel.textContent = folderName
+
+        folderHeader.appendChild(folderIcon)
+        folderHeader.appendChild(folderLabel)
+
+        // Delete "×" — mirrors the tab delete, but carries data-folder
+        // (not data-url) so your handler routes it to folder deletion.
+        const folderDelete = document.createElement("button")
+        folderDelete.type = "button"
+        folderDelete.className = "folder-delete"
+        folderDelete.textContent = "×"
+        folderDelete.setAttribute("aria-label", "Delete folder")
+        folderDelete.dataset.folder = folderName
+
+        folderRow.appendChild(folderHeader)
+        folderRow.appendChild(folderDelete)
+        list.appendChild(folderRow)
+    }
+
     // data is undefined if getTabData hit its catch; fall back to {}
     const entries = Object.entries(data ?? {})
 
@@ -190,6 +229,8 @@ saveTabButton.addEventListener("click", async () => {
 const addFolderButton = document.querySelector("#add-folder-btn")
 addFolderButton.addEventListener("click", async (event) => {
     //TODO: implementation 
+    folderName = prompt("Name for your folder: ")
+    createFolder(folderName)
 })
 
 const app = document.querySelector('#app')
