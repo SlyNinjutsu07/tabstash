@@ -21,6 +21,19 @@ async function openTab(targetURL){
     
 }
 
+async function createFolder(folderName){
+    try {
+        const folders = await chrome.storage.sync.get(["__folders__"])
+        if (!folders){
+            await chrome.storage.sync.set({["__folders__"]: {}})
+            folders = await chrome.storage.sync.get(["__folders__"])
+            folders.add(folderName)
+        }
+    } catch (e){
+        console.error("Error making new folder...", e)
+    }
+}
+
 async function deleteTab(urlKey){
     try {
         await chrome.storage.sync.remove(urlKey)  // promise form — wait for it
@@ -163,6 +176,11 @@ const saveTabButton = document.querySelector("#add-btn")
 saveTabButton.addEventListener("click", async () => {
     await saveTab()   // wait for the write to finish...
     drawPopup()           // ...then redraw so the new tab shows immediately
+})
+
+const addFolderButton = document.querySelector("#add-folder-btn")
+addFolderButton.addEventListener("click", async (event) => {
+    
 })
 
 const app = document.querySelector('#app')
