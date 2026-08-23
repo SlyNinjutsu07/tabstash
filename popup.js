@@ -1,5 +1,37 @@
 console.log("popup loaded!");
 
+async function createFolder(folderName){
+    try {
+        const result = await chrome.storage.sync.get(["__folders__"])
+        const folders = result["__folders__"] ?? [] // making a new array if one doesnt exist
+
+        //guard against empty strings or null
+        folderName = folderName?.trim() 
+        if(!folderName) return
+
+        //check if folders doesnt exist
+        if (!folders.includes(folderName)){
+            folders.push(folderName)
+            await chrome.storage.sync.set({["__folders__"]: folders})
+        }
+        drawPopup()
+    } catch (e){
+        console.error("Error making new folder...", e)
+    }
+}
+
+async function deleteFolder(folder){
+    try {
+        const result = await chrome.storage.sync.get(["__folders__"])
+        let folders = result["__folders__"]
+        folders = folders.filter(item => item !== folder)
+        await chrome.storage.sync.set({["__folders__"]: folders})
+        drawPopup()
+    } catch (error){
+        console.error("Error deleting folder...", error)
+    }
+}
+
 async function getTabs(){
     try {
         const data = await chrome.storage.sync.get(null) // All data objects
@@ -19,26 +51,6 @@ async function openTab(targetURL){
         console.error("Failed to open tab...", e)
     }
     
-}
-
-async function createFolder(folderName){
-    try {
-        const result = await chrome.storage.sync.get(["__folders__"])
-        const folders = result["__folders__"] ?? [] // making a new array if one doesnt exist
-
-        //guard against empty strings or null
-        folderName = folderName?.trim() 
-        if(!folderName) return
-
-        //check if folders doesnt exist
-        if (!folders.includes(folderName)){
-            folders.push(folderName)
-            await chrome.storage.sync.set({["__folders__"]: folders})
-        }
-        
-    } catch (e){
-        console.error("Error making new folder...", e)
-    }
 }
 
 async function deleteTab(urlKey){
