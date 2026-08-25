@@ -122,7 +122,7 @@ async function drawPopup(){
 
         const folderIcon = document.createElement("img")
         folderIcon.className = "folder-icon"
-        folderIcon.src = "icons/folder.svg"
+        folderIcon.src = "icons/closed-folder.svg"
         folderIcon.alt = ""
 
         const folderLabel = document.createElement("span")
