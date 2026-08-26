@@ -107,7 +107,7 @@ async function drawPopup(){
     // drawPopup() again never duplicates rows
     list.innerHTML = ""
 
-    buildFolders(folders, list)
+    
 
     // data is undefined if getTabData hit its catch; fall back to {}
     const entries = Object.entries(data ?? {})
@@ -120,6 +120,8 @@ async function drawPopup(){
         list.appendChild(empty)
         return
     }
+
+    buildFolders(folders, list)
 
     buildSavedTabs(entries, list)
     

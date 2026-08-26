@@ -1,6 +1,6 @@
 function buildSavedTabs(tabEntries, list){
     // Build one row per saved tab
-    for (const [url, tab] of tabEntries) {
+    for (const [url, tabData] of tabEntries) {
         // Row container. A <div> for now; the URL rides along in
         // data-url so your future click handler can read row.dataset.url
         const row = document.createElement("div")
@@ -11,7 +11,7 @@ function buildSavedTabs(tabEntries, list){
         // have none), swap in a bundled placeholder image
         const favicon = document.createElement("img")
         favicon.className = "tab-favicon"
-        favicon.src = tab.iconURL || "icons/empty-website-logo.png"
+        favicon.src = tabData.iconURL || "icons/empty-website-logo.png"
         favicon.alt = ""   // decorative: the title text sits right beside it
         favicon.onerror = () => {
             favicon.onerror = null   // stop, so a missing fallback can't loop forever
@@ -22,7 +22,7 @@ function buildSavedTabs(tabEntries, list){
         // containing HTML can't inject markup into the popup
         const title = document.createElement("span")
         title.className = "tab-title"
-        title.textContent = tab.title || url
+        title.textContent = tabData.title || url
 
         // Delete button ("×"). Hidden until the row is hovered (CSS handles
         // the reveal). No click handler here on purpose — you'll add the
@@ -48,7 +48,31 @@ function buildSavedTabs(tabEntries, list){
         // Assemble: [open button] + [delete button] into the row, row into list
         row.appendChild(open)
         row.appendChild(del)
-        list.appendChild(row)
+
+        if(tabData.folder === "None")
+            list.appendChild(row)
+        else{
+            const folderHeaders = Array.from(document.querySelectorAll("folder-header"))
+            
+            const matchingHeader = folderHeaders.find(folder => {
+                return folder.getAttribute("data-folder") === tabData.folder;
+            })
+
+            if (matchingHeader) {
+                // 3. Find the ".folder-tabs" box inside that matching header row
+                const matchingFolderTabs = matchingHeader.querySelector(".folder-tabs");
+                
+                if (matchingFolderTabs) {
+                    matchingFolderTabs.appendChild(row);
+                } else {
+                    console.warn("Found the folder header, but it is missing a '.folder-tabs' element inside it.");
+                }
+            } else {
+                console.warn(`Could not find a folder header with data-folder: ${tabData.folder}`);
+            }
+        }
+
+        
     }
 }
 
@@ -87,8 +111,14 @@ function buildFolders(listOfFolders, list){
         folderDelete.setAttribute("aria-label", "Delete folder")
         folderDelete.dataset.folder = folderName
 
+        // For adding tabs that are assigned to the current folder
+        const folderTabs = document.createElement("div")
+        folderTabs.className = "folder-tabs"
+
         folderRow.appendChild(folderHeader)
         folderRow.appendChild(folderDelete)
+        folderRow.appendChild(folderTabs)
+
         list.appendChild(folderRow)
     }
 }
