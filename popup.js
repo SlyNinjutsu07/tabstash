@@ -180,13 +180,11 @@ app.addEventListener("click", async (event) => {
 
         const folderHeader = event.target.closest(".folder-header")
         if (folderHeader) {
-            //TODO: expand folder or not
-            const folderIcon = folderHeader.querySelector(".folder-icon")
-            
-            const isOpen = folderHeader.classList.toggle("open")   // toggles, returns new state
-            folderIcon.src = isOpen ? "icons/open-folder.svg" : "icons/closed-folder.svg"
-        
+            const folderRow = folderHeader.closest(".folder-row")
+            const isCollapsed = folderRow.classList.toggle("collapsed")   // flip open/shut
 
+            const folderIcon = folderHeader.querySelector(".folder-icon")
+            folderIcon.src = isCollapsed ? "icons/closed-folder.svg" : "icons/open-folder.svg"
             return
         }
     })

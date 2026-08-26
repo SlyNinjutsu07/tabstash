@@ -159,13 +159,19 @@ body {
    delegation handler can tell folder clicks from tab clicks */
 .folder-row {
   display: flex;
+  flex-direction: column;      /* header line on top, nested tabs below */
+}
+
+/* The header line: folder header + delete, side by side */
+.folder-top {
+  display: flex;
   align-items: center;
   gap: 8px;
   padding: 8px;
   border-radius: 6px;
 }
 
-.folder-row:hover {
+.folder-top:hover {
   background: #f2f2f2;
 }
 
@@ -219,13 +225,23 @@ body {
   transition: opacity 0.15s ease;
 }
 
-.folder-row:hover .folder-delete {
+.folder-top:hover .folder-delete {
   opacity: 1;
 }
 
 .folder-delete:hover {
   background: #fdecec;
   color: #d33;
+}
+
+/* Nested tabs, indented under the folder header */
+.folder-tabs {
+  margin-left: 24px;
+}
+
+/* Collapse: hide a folder's tabs when its row is collapsed */
+.folder-row.collapsed .folder-tabs {
+  display: none;
 }
 
 .empty-msg {

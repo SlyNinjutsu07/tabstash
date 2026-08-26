@@ -49,26 +49,15 @@ function buildSavedTabs(tabEntries, list){
         row.appendChild(open)
         row.appendChild(del)
 
-        if(tabData.folder === "None")
+        if (tabData.folder === "None") {
             list.appendChild(row)
-        else{
-            const folderHeaders = Array.from(document.querySelectorAll("folder-header"))
-            
-            const matchingHeader = folderHeaders.find(folder => {
-                return folder.getAttribute("data-folder") === tabData.folder;
-            })
-
-            if (matchingHeader) {
-                // 3. Find the ".folder-tabs" box inside that matching header row
-                const matchingFolderTabs = matchingHeader.querySelector(".folder-tabs");
-                
-                if (matchingFolderTabs) {
-                    matchingFolderTabs.appendChild(row);
-                } else {
-                    console.warn("Found the folder header, but it is missing a '.folder-tabs' element inside it.");
-                }
+        } else {
+            // Route the tab straight into its folder's .folder-tabs box 
+            const folderTabs = list.querySelector(`.folder-tabs[data-folder="${tabData.folder}"]`)
+            if (folderTabs) {
+                folderTabs.appendChild(row)
             } else {
-                console.warn(`Could not find a folder header with data-folder: ${tabData.folder}`);
+                console.warn(`No folder box for: ${tabData.folder}`)
             }
         }
 
@@ -81,7 +70,7 @@ function buildFolders(listOfFolders, list){
     // Folders render FIRST so they show even when there are no saved tabs.
     for (const folderName of listOfFolders) {
         const folderRow = document.createElement("div")
-        folderRow.className = "folder-row"
+        folderRow.className = "folder-row collapsed"   // start collapsed (matches the closed icon)
 
         // Clickable header (icon + name). data-folder tells your handler
         // which folder was clicked (parallel to a tab's data-url).
@@ -114,9 +103,15 @@ function buildFolders(listOfFolders, list){
         // For adding tabs that are assigned to the current folder
         const folderTabs = document.createElement("div")
         folderTabs.className = "folder-tabs"
+        folderTabs.dataset.folder = folderName   // lets buildSavedTabs route tabs straight here
 
-        folderRow.appendChild(folderHeader)
-        folderRow.appendChild(folderDelete)
+        // Header + delete share one horizontal line; folder-tabs sits below it
+        const folderTop = document.createElement("div")
+        folderTop.className = "folder-top"
+        folderTop.appendChild(folderHeader)
+        folderTop.appendChild(folderDelete)
+
+        folderRow.appendChild(folderTop)
         folderRow.appendChild(folderTabs)
 
         list.appendChild(folderRow)
