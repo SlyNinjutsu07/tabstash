@@ -244,6 +244,17 @@ body {
   display: none;
 }
 
+/* Drag states */
+.tab-row.dragging {
+  opacity: 0.4;            /* the row being dragged fades while in flight */
+}
+
+.folder-row.drag-over {
+  outline: 2px dashed #16a34a;   /* green dashed frame = "drop here" */
+  outline-offset: -2px;
+  border-radius: 6px;
+}
+
 .empty-msg {
   margin: 0;
   padding: 8px;

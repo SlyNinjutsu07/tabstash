@@ -1,3 +1,21 @@
+
+
+async function assignTabToFolder(url, folderName){
+    try {
+        const selectedTabData = await chrome.storage.sync.get([url])
+        
+        if(selectedTabData[url] === undefined) return
+        
+        selectedTabData[url].folder = folderName
+    
+
+        await chrome.storage.sync.set({[url]: selectedTabData[url]})
+        drawPopup()
+    } catch(e){
+        console.error("Failed to assign tab to folder...", e)
+    }
+}
+
 function buildSavedTabs(tabEntries, list){
     // Build one row per saved tab
     for (const [url, tabData] of tabEntries) {
@@ -6,6 +24,7 @@ function buildSavedTabs(tabEntries, list){
         const row = document.createElement("div")
         row.className = "tab-row"
         row.dataset.url = url
+        row.draggable = true
 
         // Favicon image. If the site's icon fails to load (some tabs
         // have none), swap in a bundled placeholder image
@@ -61,6 +80,14 @@ function buildSavedTabs(tabEntries, list){
             }
         }
 
+        // Drag source: stash the url, and flag the row as "dragging" for styling
+        row.addEventListener("dragstart", function(e){
+            e.dataTransfer.setData("text/plain", tabData.url)
+            row.classList.add("dragging")
+        })
+        row.addEventListener("dragend", function(e){
+            row.classList.remove("dragging")   // fires when the drag ends, dropped or not
+        })
         
     }
 }
@@ -114,6 +141,37 @@ function buildFolders(listOfFolders, list){
         folderRow.appendChild(folderTop)
         folderRow.appendChild(folderTabs)
 
+
+        // Drop target. dragCounter tracks enter/leave — because those events
+        // ALSO fire as the cursor crosses child elements inside the folder,
+        // a plain add-on-enter / remove-on-leave would flicker. Counting
+        // enters minus leaves means the highlight only clears once the cursor
+        // has truly left the whole folder.
+        let dragCounter = 0
+
+        folderRow.addEventListener("dragover", function(e){
+            e.preventDefault()
+        })
+
+        folderRow.addEventListener("dragenter", function(e){
+            dragCounter++
+            folderRow.classList.add("drag-over")
+        })
+
+        folderRow.addEventListener("dragleave", function(e){
+            dragCounter--
+            if (dragCounter === 0) folderRow.classList.remove("drag-over")
+        })
+
+        folderRow.addEventListener("drop", function(e){
+            e.preventDefault()
+            dragCounter = 0
+            folderRow.classList.remove("drag-over")   // clear the highlight
+            let dataURL = e.dataTransfer.getData("text/plain")
+            assignTabToFolder(dataURL, folderName)
+        })
+
         list.appendChild(folderRow)
     }
 }
+
