@@ -1,4 +1,4 @@
-
+let expandedFolders = new Set()
 
 async function assignTabToFolder(url, folderName){
     try {
@@ -97,7 +97,8 @@ function buildFolders(listOfFolders, list){
     // Folders render FIRST so they show even when there are no saved tabs.
     for (const folderName of listOfFolders) {
         const folderRow = document.createElement("div")
-        folderRow.className = "folder-row collapsed"   // start collapsed (matches the closed icon)
+
+        folderRow.className = expandedFolders.has(folderName) ? "folder-row" : "folder-row collapsed"
 
         // Clickable header (icon + name). data-folder tells your handler
         // which folder was clicked (parallel to a tab's data-url).
@@ -108,7 +109,7 @@ function buildFolders(listOfFolders, list){
 
         const folderIcon = document.createElement("img")
         folderIcon.className = "folder-icon"
-        folderIcon.src = "icons/closed-folder.svg"
+        folderIcon.src = expandedFolders.has(folderName) ? "icons/open-folder.svg" : "icons/closed-folder.svg"
         folderIcon.alt = ""
 
         const folderLabel = document.createElement("span")
@@ -164,6 +165,8 @@ function buildFolders(listOfFolders, list){
         })
 
         folderRow.addEventListener("drop", function(e){
+            if(!expandedFolders.has(folderName)) expandedFolders.add(folderName)
+            e.stopPropagation()
             e.preventDefault()
             dragCounter = 0
             folderRow.classList.remove("drag-over")   // clear the highlight

@@ -183,8 +183,11 @@ app.addEventListener("click", async (event) => {
             const folderRow = folderHeader.closest(".folder-row")
             const isCollapsed = folderRow.classList.toggle("collapsed")   // flip open/shut
 
+            if(!isCollapsed) expandedFolders.add(folderHeader.dataset.folder)
+            else expandedFolders.delete(folderHeader.dataset.folder)
+
             const folderIcon = folderHeader.querySelector(".folder-icon")
-            folderIcon.src = isCollapsed ? "icons/closed-folder.svg" : "icons/open-folder.svg"
+            folderIcon.src = expandedFolders.has(folderHeader.dataset.folder) ? "icons/open-folder.svg" : "icons/closed-folder.svg"
             return
         }
     })
