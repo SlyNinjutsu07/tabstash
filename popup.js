@@ -163,34 +163,46 @@ addFolderButton.addEventListener("click", async (event) => {
 
 const app = document.querySelector('#app')
 app.addEventListener("click", async (event) => {
-        const del = event.target.closest(".tab-delete")
-        if (del){
-            await deleteTab(del.dataset.url)
-            return
-        }
+    const del = event.target.closest(".tab-delete")
+    if (del){
+        await deleteTab(del.dataset.url)
+        return
+    }
 
-        const open = event.target.closest(".tab-open")
-        if(open){
-            await openTab(open.dataset.url)
-            return
-        }
+    const open = event.target.closest(".tab-open")
+    if(open){
+        await openTab(open.dataset.url)
+        return
+    }
 
-        const folderDel = event.target.closest(".folder-delete")
-        if (folderDel) { await deleteFolder(folderDel.dataset.folder); return }
+    const folderDel = event.target.closest(".folder-delete")
+    if (folderDel) { await deleteFolder(folderDel.dataset.folder); return }
 
-        const folderHeader = event.target.closest(".folder-header")
-        if (folderHeader) {
-            const folderRow = folderHeader.closest(".folder-row")
-            const isCollapsed = folderRow.classList.toggle("collapsed")   // flip open/shut
+    const folderHeader = event.target.closest(".folder-header")
+    if (folderHeader) {
+        const folderRow = folderHeader.closest(".folder-row")
+        const isCollapsed = folderRow.classList.toggle("collapsed")   // flip open/shut
 
-            if(!isCollapsed) expandedFolders.add(folderHeader.dataset.folder)
-            else expandedFolders.delete(folderHeader.dataset.folder)
+        if(!isCollapsed) expandedFolders.add(folderHeader.dataset.folder)
+        else expandedFolders.delete(folderHeader.dataset.folder)
 
-            const folderIcon = folderHeader.querySelector(".folder-icon")
-            folderIcon.src = expandedFolders.has(folderHeader.dataset.folder) ? "icons/open-folder.svg" : "icons/closed-folder.svg"
-            return
-        }
-    })
+        const folderIcon = folderHeader.querySelector(".folder-icon")
+        folderIcon.src = expandedFolders.has(folderHeader.dataset.folder) ? "icons/open-folder.svg" : "icons/closed-folder.svg"
+        return
+    }
+})
+app.addEventListener("dragover", (e) => {
+    if(e.target.closest(".folder-row")){
+        return
+    }
+    e.preventDefault()
+})
+app.addEventListener("drop", (e)=>{
+    let dataURL = e.dataTransfer.getData("text/plain")
+    if (!dataURL) return
+    assignTabToFolder(dataURL, "None")
+})
+
 
 
 
