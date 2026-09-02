@@ -22,10 +22,20 @@ async function createFolder(folderName){
 
 async function deleteFolder(folder){
     try {
-        const result = await chrome.storage.sync.get(["__folders__"])
-        let folders = result["__folders__"]
-        folders = folders.filter(item => item !== folder)
+        const result = await chrome.storage.sync.get(null)
+        let {["__folders__"]: folders, ...tabs} = result
+
+        //let folders = result["__folders__"]
+        if (folder)
+            folders = folders.filter(item => item !== folder)
         await chrome.storage.sync.set({["__folders__"]: folders})
+
+        //Change each tabs folder property to "None"
+        for(const tabData of Object.values(tabs)){
+            if(tabData.folder == folder) tabData.folder = "None"
+        }
+        await chrome.storage.sync.set({...tabs})
+
         drawPopup()
     } catch (error){
         console.error("Error deleting folder...", error)
@@ -34,7 +44,23 @@ async function deleteFolder(folder){
 
 async function getTabs(){
     try {
-        const data = await chrome.storage.sync.get(null) // All data objects
+        let incorrectFolder = false
+
+        let data = await chrome.storage.sync.get(null) // All data objects
+        const {["__folders__"]: folders, ...tabs} = data
+
+        //Correct any errors in folder assignments
+        for(const t of Object.values(tabs)){
+            if(!folders.includes(t.folder)){
+                t.folder = "None"
+                incorrectFolder = true
+            }
+        }
+        
+        //Resave and retrieve once more
+        if (incorrectFolder){
+            await chrome.storage.sync.set({...tabs})
+        }
 
         return data
     } catch (error){
