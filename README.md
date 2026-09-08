@@ -4,11 +4,7 @@ TabStash is a Chrome extension for saving tabs you want to get back to later and
 
 ## Demo
 
-<video src="chrome_a2fDqhPVNY.mp4" controls muted width="720">
-  Your browser doesn't support embedded video. <a href="chrome_a2fDqhPVNY.mp4">Download the demo (.mp4)</a> instead.
-</video>
-
-*If the video doesn't play above, [view it directly](chrome_a2fDqhPVNY.mp4).*
+https://github.com/user-attachments/assets/16ac60ec-508b-48d6-9163-20140de1eadb
 
 ## Features
 
